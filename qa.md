@@ -49,7 +49,7 @@
 
 ## Live QA To Complete
 
-- GitHub Pages live URL returns HTTP 200
-- CSS and hero image return HTTP 200
-- Live HTML contains JR Contracting, SMS/call route, gallery, one iframe, schema and latest asset markers
-- Live screenshots match local QA
+- GitHub Pages live URL returns HTTP 200 - PASS
+- CSS and hero image return HTTP 200 - PASS
+- Live HTML contains JR Contracting, SMS/call route, gallery, one iframe, schema and latest asset markers - PASS
+- Live screenshots match local QA - PASS (`qa-live-hero-desktop.png`, `qa-live-hero-mobile.png`, `qa-live-gallery-desktop.png`, `qa-live-gallery-mobile.png`, `qa-live-contact-desktop.png`)
