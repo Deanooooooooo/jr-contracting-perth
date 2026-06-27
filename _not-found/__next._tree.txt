@@ -1,2 +1,2 @@
-:HL["/jr-contracting-perth/_next/static/chunks/0vwk54p5pxjpa.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"LJPC1o-B3Vm338pNc8NmT"}
+:HL["/jr-contracting-perth/_next/static/chunks/24prjvmgujudl.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"SAch7WJQiHWzCTBThtdIg"}
