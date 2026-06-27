@@ -185,15 +185,15 @@ export default function Page() {
       const galleryMedia = gsap.matchMedia();
       galleryMedia.add("(min-width: 768px)", () => {
         if (!galleryTrack) return;
-        const overflow = () => Math.max(0, galleryTrack.scrollWidth - window.innerWidth + 96);
+        const overflow = () => Math.max(0, galleryTrack.scrollWidth - window.innerWidth);
         gsap.to(galleryTrack, {
           x: () => -overflow(),
           ease: "none",
           scrollTrigger: {
             trigger: ".gallery-stage",
             start: "top top",
-            end: () => `+=${Math.max(1100, overflow() + 520)}`,
-            scrub: 0.85,
+            end: () => `+=${Math.max(1800, overflow() + window.innerHeight * 0.9)}`,
+            scrub: 0.35,
             pin: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
@@ -373,10 +373,10 @@ export default function Page() {
             </p>
           </Reveal>
         </div>
-        <div className="gallery-track mx-auto mt-12 grid w-full max-w-7xl grid-cols-1 gap-4 px-4 sm:px-8 md:flex md:w-[112rem] md:max-w-none">
+        <div className="gallery-track mx-auto mt-12 grid w-full max-w-7xl grid-cols-1 gap-4 px-4 sm:px-8 md:flex md:w-max md:max-w-none md:gap-6">
           {gallery.map((item) => (
-            <motion.figure key={item.src} className="relative h-[72vh] max-h-[620px] min-h-[430px] w-full shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:min-h-[540px] md:h-[600px] md:w-[430px]" whileHover={{ y: -10, scale: 1.018 }}>
-              <Image src={assets(item.src)} alt={item.alt} fill sizes="(min-width: 768px) 430px, 100vw" loading="eager" className="object-cover" />
+            <motion.figure key={item.src} className="relative h-[72vh] max-h-[620px] min-h-[430px] w-full shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:min-h-[540px] md:h-[600px] md:w-[64vw] lg:w-[58vw] xl:w-[52vw] 2xl:w-[48vw]" whileHover={{ y: -10, scale: 1.018 }}>
+              <Image src={assets(item.src)} alt={item.alt} fill sizes="(min-width: 1536px) 48vw, (min-width: 1280px) 52vw, (min-width: 1024px) 58vw, (min-width: 768px) 64vw, 100vw" loading="eager" className="object-cover" />
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/70 to-transparent p-5">
                 <span className="block text-xl font-black">{item.title}</span>
                 <span className="mt-1 block text-sm font-bold text-white/64">{item.source}</span>
