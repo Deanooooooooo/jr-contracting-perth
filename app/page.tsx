@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { animate, motion, useInView, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const assets = (name: string) => `${basePath}/assets/${name}`;
@@ -123,25 +122,6 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   );
 }
 
-function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "220px" });
-
-  useEffect(() => {
-    if (!ref.current || !inView) return;
-    const controls = animate(0, value, {
-      duration: 1.15,
-      ease: "easeOut",
-      onUpdate: (latest) => {
-        if (ref.current) ref.current.textContent = `${Math.round(latest)}${suffix}`;
-      },
-    });
-    return () => controls.stop();
-  }, [inView, suffix, value]);
-
-  return <span ref={ref}>0{suffix}</span>;
-}
-
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -201,16 +181,31 @@ export default function Page() {
         ease: "power3.out",
         scrollTrigger: { trigger: ".services-grid", start: "top 74%" },
       });
-      gsap.to(".gallery-track", {
-        xPercent: -7,
-        ease: "none",
-        scrollTrigger: { trigger: ".gallery-stage", start: "top top", end: "bottom top", scrub: 0.7 },
+      const galleryTrack = document.querySelector<HTMLElement>(".gallery-track");
+      const galleryMedia = gsap.matchMedia();
+      galleryMedia.add("(min-width: 768px)", () => {
+        if (!galleryTrack) return;
+        const overflow = () => Math.max(0, galleryTrack.scrollWidth - window.innerWidth + 96);
+        gsap.to(galleryTrack, {
+          x: () => -overflow(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".gallery-stage",
+            start: "top top",
+            end: () => `+=${Math.max(1100, overflow() + 520)}`,
+            scrub: 0.85,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
       });
       gsap.to(".signal-line", {
         scaleX: 1,
         ease: "none",
         scrollTrigger: { trigger: ".proof-section", start: "top 70%", end: "bottom 40%", scrub: true },
       });
+      return () => galleryMedia.revert();
     }, main);
     return () => ctx.revert();
   }, []);
@@ -274,12 +269,12 @@ export default function Page() {
         </motion.div>
         <motion.div style={{ y: beamY }} className="pointer-events-none absolute -left-28 top-10 h-[36rem] w-[36rem] rounded-full border border-cyan-200/12" />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl items-end gap-8 lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-8 lg:grid-cols-[0.98fr_0.86fr] xl:gap-12">
           <Reveal>
             <div className="mb-6 inline-flex flex-wrap items-center gap-2 rounded-full border border-cyan-200/25 bg-cyan-200/10 px-4 py-2 text-sm font-black text-cyan-100">
               <Waves size={18} /> Perth pool pressure testing, cleans & leak checks
             </div>
-            <h1 className="max-w-5xl text-5xl font-black leading-[0.92] tracking-normal sm:text-7xl lg:text-8xl">
+            <h1 className="max-w-4xl text-4xl font-black leading-[1] tracking-normal sm:text-6xl lg:text-[4.6rem] xl:text-[4.85rem]">
               Pool help before the concrete goes in and after the dust settles.
             </h1>
             <p className="mt-7 max-w-2xl text-lg font-medium leading-8 text-white/78 sm:text-xl">
@@ -297,7 +292,7 @@ export default function Page() {
 
           <Reveal delay={0.12}>
             <form
-              className="rounded-2xl border border-white/16 bg-white/[0.09] p-5 shadow-[0_24px_90px_rgba(0,0,0,0.44)] backdrop-blur-2xl sm:p-6"
+              className="w-full max-w-xl rounded-2xl border border-white/16 bg-white/[0.09] p-5 shadow-[0_24px_90px_rgba(0,0,0,0.44)] backdrop-blur-2xl sm:p-6 lg:justify-self-end"
               onSubmit={(event) => {
                 event.preventDefault();
                 window.location.href = smsHref;
@@ -333,16 +328,14 @@ export default function Page() {
 
       <section className="relative z-10 mx-auto grid max-w-7xl gap-4 px-4 py-10 sm:px-8 md:grid-cols-3">
         {[
-          [6, "", "pool service lanes"],
-          [3, "", "real Facebook media pieces"],
-          [1, "", "direct phone route"],
-        ].map(([value, suffix, label]) => (
-          <Card key={String(label)} className="rounded-2xl border-slate-900/8 bg-white shadow-[0_22px_70px_rgba(15,23,42,0.08)]">
-            <CardContent className="p-6">
-              <strong className="block text-5xl font-black text-cyan-800"><Counter value={Number(value)} suffix={String(suffix)} /></strong>
-              <span className="mt-3 block text-base font-bold text-slate-600">{label}</span>
-            </CardContent>
-          </Card>
+          ["Before concrete", "Pressure testing before the surrounds go in, so buried issues are easier to catch."],
+          ["After works", "Post-concrete pool cleaning for dust, residue and cloudy water after trades finish."],
+          ["Direct help", "Call or text the brief straight to JR with the suburb, service and issue."],
+        ].map(([title, body]) => (
+          <article key={title} className="rounded-2xl border border-slate-900/8 bg-white p-6 shadow-[0_22px_70px_rgba(15,23,42,0.08)]">
+            <strong className="block text-2xl font-black text-cyan-800">{title}</strong>
+            <span className="mt-3 block text-base font-bold leading-7 text-slate-600">{body}</span>
+          </article>
         ))}
       </section>
 
